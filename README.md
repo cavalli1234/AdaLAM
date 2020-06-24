@@ -2,6 +2,7 @@
 
 [AdaLAM: Revisiting Handcrafted Outlier Detection](https://arxiv.org/abs/2006.04250)
 <img src="media/teaser.jpg" width="600"/>
+
 AdaLAM is a fully handcrafted realtime outlier filter integrating several best practices into a single efficient and effective framework. It detects inliers by searching for significant local affine patterns in image correspondences.
 
 AdaLAM proved to be very competitive with recent deep learning methods, taking the second place for the [Image Matching Challenge](https://vision.uvic.ca/image-matching-challenge/) at CVPR 2020 for the 8000 keypoints category.
