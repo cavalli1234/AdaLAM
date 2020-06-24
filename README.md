@@ -3,15 +3,19 @@
 [AdaLAM: Revisiting Handcrafted Outlier Detection](https://arxiv.org/abs/2006.04250)
 <img src="media/teaser.jpg" width="1000"/>
 
+Local feature matching is a critical component of many computer vision pipelines, including among others Structure-from-Motion, SLAM, and Visual Localization. However, due to limitations in the descriptors, raw matches are often contaminated by a majority of outliers. Filtering outliers is a vital step in any sparse vision pipeline which is based on local feature matching.
+
 AdaLAM is a fully handcrafted realtime outlier filter integrating several best practices into a single efficient and effective framework. It detects inliers by searching for significant local affine patterns in image correspondences.
 
-AdaLAM proved to be very competitive with recent deep learning methods, taking the second place for the [Image Matching Challenge](https://vision.uvic.ca/image-matching-challenge/) at CVPR 2020 for the 8000 keypoints category.
+AdaLAM proved to be very competitive with recent deep learning methods, taking the second place for the [Image Matching Challenge](https://vision.uvic.ca/image-matching-challenge/) at CVPR 2020 for the 8000 keypoints category. [Here](https://youtu.be/UQ4uJX7UDB8?t=17139) is our invited talk about AdaLAM and the challenge submission.
 
 Check our [paper](https://arxiv.org/abs/2006.04250) for details about AdaLAM.
 
 
 In this repository we provide a full pytorch implementation of AdaLAM. We suggest running AdaLAM on a CUDA device for best performance, but CPU execution is possible as well.
 We also provide an example script to run a COLMAP reconstruction using AdaLAM for matching.
+
+The main aim of this repository is to provide a strong classical baseline that can be used easily for comparison purposes.
 
 If you find our code or paper useful, please consider citing
 ```
