@@ -1,14 +1,15 @@
 # AdaLAM
 
 [AdaLAM: Revisiting Handcrafted Outlier Detection](https://arxiv.org/abs/2006.04250)
-<img src="media/teaser.png" width="600"/>
+<img src="media/teaser.jpg" width="600"/>
 AdaLAM is a fully handcrafted realtime outlier filter integrating several best practices into a single efficient and effective framework. It detects inliers by searching for significant local affine patterns in image correspondences.
 
 AdaLAM proved to be very competitive with recent deep learning methods, taking the second place for the [Image Matching Challenge](https://vision.uvic.ca/image-matching-challenge/) at CVPR 2020 for the 8000 keypoints category.
-Check our [paper](https://arxiv.org/abs/2006.04250) for details.
+
+Check our [paper](https://arxiv.org/abs/2006.04250) for details about AdaLAM.
 
 
-In this repository we propose a full pytorch implementation of AdaLAM. We suggest running AdaLAM on a CUDA device for best performance, but CPU execution is possible as well.
+In this repository we provide a full pytorch implementation of AdaLAM. We suggest running AdaLAM on a CUDA device for best performance, but CPU execution is possible as well.
 We also provide an example script to run a COLMAP reconstruction using AdaLAM for matching.
 
 If you find our code or paper useful, please consider citing
@@ -22,7 +23,7 @@ If you find our code or paper useful, please consider citing
 
 ## Installation
 
-For running AdaLAM you essentially need a Python3.7 environment with pytorch and tqdm available.
+For running AdaLAM you need a Python3.7 environment with pytorch and tqdm available.
 
 If you already have one, let's call it _yourenv_, then installing AdaLAM is as simple as:
 ```
@@ -36,8 +37,8 @@ Here are detailed steps for setting up a sample environment:
 
 Download and install anaconda3.
 ```
-wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86\_64.sh
-sh Anaconda3-2019.07-Linux-x86\_64.sh
+wget https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh
+sh Anaconda3-2019.07-Linux-x86_64.sh
 ```
 
 Clone this repository and move inside:
@@ -69,11 +70,11 @@ conda activate adalam
 
 To run the demo on image couples we need to install opencv for extracting SIFT keypoints.
 ```
-pip3 install opencv-python-nonfree
+pip install opencv-python-nonfree
 ```
 Now you can use our demo:
 ```
-python3 example.py --im1 im1.jpg --im2 im2.jpg
+python example.py --im1 im1.jpg --im2 im2.jpg
 ```
 
 To run the colmap reconstruction demo you will need to have colmap installed.
@@ -84,13 +85,13 @@ sudo apt install colmap
 We now assume that you already have a folder /path/to/colmap/project where you want to make the reconstruction. /path/to/colmap/project only needs to have a subfolder images/ containing all the source images. Optionally you can include a text file named image\_pairs.txt to specify a subset of image couples to match, exhaustive matching between all image couples is perfomed otherwise.
 You can perform the reconstruction with AdaLAM matching by running:
 ```
-./colmap\_reconstruction.sh /path/to/colmap/project
+./colmap_reconstruction.sh /path/to/colmap/project
 ```
 We suggest tuning the script the for best reconstruction results. For example, if you know that all your images were taken from the same camera, you may uncomment the option ``--ImageReader.single_camera 1`` in the feature extraction stage.
 
 ## Usage
 
-Once adalam is installed in your environment, usage is very simple. Here is a basic example for performing filtered matching:
+Once adalam is installed in your environment, usage is very simple. Here is a minimal example for performing filtered matching:
 
 ```python
 from adalam import AdalamFilter
