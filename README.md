@@ -32,10 +32,8 @@ For running AdaLAM you need a Python3.7 environment with pytorch and tqdm availa
 
 If you already have one, let's call it _yourenv_, then installing AdaLAM is as simple as:
 ```
-git clone 'https://github.com/cavalli1234/AdaLAM'
-cd AdaLAM
 conda activate yourenv
-pip install ./
+pip install git+https://github.com/cavalli1234/AdaLAM
 ```
 
 Here are detailed steps for setting up a sample environment:
