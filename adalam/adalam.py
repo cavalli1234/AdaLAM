@@ -148,6 +148,12 @@ class AdalamFilter:
 
 
     def __to_torch(self, *args):
+        """
+        Convert tensor to tensor.
+
+        Args:
+            self: (todo): write your description
+        """
         return (a if a is None or torch.is_tensor(a) else
                 torch.tensor(a, device=self.config['device'], dtype=torch.float32) for a in args)
 
@@ -177,9 +183,24 @@ class AdalamFilter:
                     Workaround: sanitize names of your images and update these names in the colmap database before running.
         """
         def blob_to_array(blob, dtype, shape=(-1,)):
+            """
+            Convert blob array to blob array.
+
+            Args:
+                blob: (todo): write your description
+                dtype: (todo): write your description
+                shape: (int): write your description
+            """
             return np.frombuffer(blob, dtype=dtype).reshape(*shape)
 
         def image_ids_to_pair_id(image_id1, image_id2):
+            """
+            Convert image_id1 id2 to pair_id2.
+
+            Args:
+                image_id1: (str): write your description
+                image_id2: (str): write your description
+            """
             if image_id1 > image_id2:
                 return 2147483647 * image_id2 + image_id1
             else:
@@ -225,6 +246,12 @@ class AdalamFilter:
                     f.write(p + "\n")
 
         def rootsift(desc):
+            """
+            Calculate the optimal angles.
+
+            Args:
+                desc: (str): write your description
+            """
             l1d = np.linalg.norm(desc, axis=-1, ord=1, keepdims=True)
             sd = np.sign(desc)
             return np.sqrt(sd * desc / l1d) * sd

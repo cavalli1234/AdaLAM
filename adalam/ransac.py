@@ -3,6 +3,13 @@ import torch
 
 
 def stable_sort_residuals(residuals, ransidx):
+    """
+    Sort residuals.
+
+    Args:
+        residuals: (list): write your description
+        ransidx: (array): write your description
+    """
     logres = torch.log(residuals + 1e-10)
     minlogres = torch.min(logres)
     maxlogres = torch.max(logres)
@@ -17,6 +24,14 @@ def stable_sort_residuals(residuals, ransidx):
 
 
 def group_sum_and_cumsum(scores_mat, end_group_idx, group_idx=None):
+    """
+    Computes the sum_matrix : np. array.
+
+    Args:
+        scores_mat: (todo): write your description
+        end_group_idx: (int): write your description
+        group_idx: (int): write your description
+    """
     cumulative_scores = torch.cumsum(scores_mat, dim=1)
     ending_cumusums = cumulative_scores[:, end_group_idx]
     shifted_ending_cumusums = torch.cat(
@@ -31,6 +46,17 @@ def group_sum_and_cumsum(scores_mat, end_group_idx, group_idx=None):
 
 
 def confidence_based_inlier_selection(residuals, ransidx, rdims, idxoffsets, dv, min_confidence):
+    """
+    Compute the confidence confidence intervals for each sample.
+
+    Args:
+        residuals: (todo): write your description
+        ransidx: (todo): write your description
+        rdims: (int): write your description
+        idxoffsets: (int): write your description
+        dv: (todo): write your description
+        min_confidence: (str): write your description
+    """
     numransacs = rdims.shape[0]
     numiters = residuals.shape[0]
 
@@ -66,6 +92,18 @@ def confidence_based_inlier_selection(residuals, ransidx, rdims, idxoffsets, dv,
 
 
 def sample_padded_inliers(xsamples, ysamples, inlier_counts, inl_ransidx, inl_sampleidx, numransacs, dv):
+    """
+    Sample inliers in samples inliers.
+
+    Args:
+        xsamples: (int): write your description
+        ysamples: (int): write your description
+        inlier_counts: (todo): write your description
+        inl_ransidx: (int): write your description
+        inl_sampleidx: (int): write your description
+        numransacs: (int): write your description
+        dv: (todo): write your description
+    """
     maxinliers = torch.max(inlier_counts).item()
     padded_inlier_x = torch.zeros(size=(numransacs, maxinliers, 2), device=dv)
     padded_inlier_y = torch.zeros(size=(numransacs, maxinliers, 2), device=dv)
@@ -77,6 +115,17 @@ def sample_padded_inliers(xsamples, ysamples, inlier_counts, inl_ransidx, inl_sa
 
 
 def ransac(xsamples, ysamples, rdims, config, iters=128, refit=True):
+    """
+    Computes a tensor.
+
+    Args:
+        xsamples: (int): write your description
+        ysamples: (int): write your description
+        rdims: (int): write your description
+        config: (todo): write your description
+        iters: (int): write your description
+        refit: (str): write your description
+    """
     DET_THR = config['detected_scale_rate_threshold']
     MIN_CONFIDENCE = config['min_confidence']
     dv = config['device']
