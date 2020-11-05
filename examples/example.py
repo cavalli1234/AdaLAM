@@ -6,6 +6,12 @@ from adalam import AdalamFilter
 
 
 def extract_keypoints(impath):
+    """
+    Extract keypoints.
+
+    Args:
+        impath: (str): write your description
+    """
     im = cv.imread(impath, cv.IMREAD_COLOR)
     d = cv.xfeatures2d.SIFT_create(nfeatures=8000, contrastThreshold=1e-5)
     kp1, desc1 = d.detectAndCompute(im, mask=np.ones(shape=im.shape[:-1] + (1,),
@@ -17,10 +23,30 @@ def extract_keypoints(impath):
 
 
 def show_matches(img1, img2, k1, k2, target_dim=800.):
+    """
+    Show the two images of two images.
+
+    Args:
+        img1: (array): write your description
+        img2: (array): write your description
+        k1: (todo): write your description
+        k2: (todo): write your description
+        target_dim: (todo): write your description
+    """
     h1, w1 = img1.shape[:2]
     h2, w2 = img2.shape[:2]
 
     def resize_horizontal(h1, w1, h2, w2, target_height):
+        """
+        Resize the horizontal horizontal horizontal horizontal horizontal horizontal horizontal horizontal.
+
+        Args:
+            h1: (todo): write your description
+            w1: (todo): write your description
+            h2: (todo): write your description
+            w2: (todo): write your description
+            target_height: (todo): write your description
+        """
         scale_to_align = float(h1) / h2
         current_width = w1 + w2 * scale_to_align
         scale_to_fit = target_height / h1

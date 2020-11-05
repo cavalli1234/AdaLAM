@@ -5,6 +5,17 @@ import torch
 
 
 def select_seeds(dist1, R1, scores1, n1, fnn12, mnn):
+    """
+    Finds the best score between two scores.
+
+    Args:
+        dist1: (str): write your description
+        R1: (todo): write your description
+        scores1: (todo): write your description
+        n1: (todo): write your description
+        fnn12: (todo): write your description
+        mnn: (todo): write your description
+    """
     im1neighmap = dist1 < R1 ** 2  # (n1, n1)
     # find out who scores higher than whom
     im1scorescomp = scores1.unsqueeze(1) > scores1.unsqueeze(0)  # (n1, n1)
@@ -22,6 +33,27 @@ def select_seeds(dist1, R1, scores1, n1, fnn12, mnn):
 
 def extract_neighborhood_sets(o1, o2, s1, s2, dist1, im1seeds, im2seeds, k1, k2, R1, R2, fnn12, ORIENTATION_THR,
                               SCALE_RATE_THR, SEARCH_EXP, MIN_INLIERS):
+    """
+    Extracts the neighbors of the neighbors between two images.
+
+    Args:
+        o1: (todo): write your description
+        o2: (todo): write your description
+        s1: (todo): write your description
+        s2: (todo): write your description
+        dist1: (todo): write your description
+        im1seeds: (todo): write your description
+        im2seeds: (todo): write your description
+        k1: (todo): write your description
+        k2: (todo): write your description
+        R1: (todo): write your description
+        R2: (todo): write your description
+        fnn12: (todo): write your description
+        ORIENTATION_THR: (int): write your description
+        SCALE_RATE_THR: (todo): write your description
+        SEARCH_EXP: (todo): write your description
+        MIN_INLIERS: (todo): write your description
+    """
     dst1 = dist1[im1seeds, :]
     dst2 = dist_matrix(k2[fnn12[im1seeds]], k2[fnn12])
     local_neighs_mask = (dst1 < (SEARCH_EXP * R1) ** 2) \
@@ -48,6 +80,18 @@ def extract_neighborhood_sets(o1, o2, s1, s2, dist1, im1seeds, im2seeds, k1, k2,
 
 
 def extract_local_patterns(fnn12, fnn_to_seed_local_consistency_map_corr, k1, k2, im1seeds, im2seeds, scores):
+    """
+    Extracts local local local local local local local local local local locations.
+
+    Args:
+        fnn12: (todo): write your description
+        fnn_to_seed_local_consistency_map_corr: (todo): write your description
+        k1: (todo): write your description
+        k2: (todo): write your description
+        im1seeds: (todo): write your description
+        im2seeds: (todo): write your description
+        scores: (todo): write your description
+    """
     ransidx, tokp1 = torch.where(fnn_to_seed_local_consistency_map_corr)
     tokp2 = fnn12[tokp1]
 
@@ -69,6 +113,23 @@ def extract_local_patterns(fnn12, fnn_to_seed_local_consistency_map_corr, k1, k2
     return im1loc, im2loc, ransidx, tokp1, tokp2
 
 def adalam_core(k1, k2, fnn12, scores1, config, mnn=None, im1shape=None, im2shape=None, o1=None, o2=None, s1=None, s2=None):
+    """
+    R compute the k1 cross - section of k2 - k2 )
+
+    Args:
+        k1: (todo): write your description
+        k2: (todo): write your description
+        fnn12: (todo): write your description
+        scores1: (todo): write your description
+        config: (todo): write your description
+        mnn: (todo): write your description
+        im1shape: (int): write your description
+        im2shape: (int): write your description
+        o1: (todo): write your description
+        o2: (todo): write your description
+        s1: (todo): write your description
+        s2: (todo): write your description
+    """
     AREA_RATIO = config['area_ratio']
     SEARCH_EXP = config['search_expansion']
     RANSAC_ITERS = config['ransac_iters']

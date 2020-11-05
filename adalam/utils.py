@@ -15,6 +15,14 @@ def arange_sequence(ranges):
 
 
 def dist_matrix(d1, d2, is_normalized=False):
+    """
+    Compute the distance between two matrices.
+
+    Args:
+        d1: (array): write your description
+        d2: (array): write your description
+        is_normalized: (bool): write your description
+    """
     if is_normalized:
         return 2 - 2.0 * d1 @ d2.t()
     x_norm = (d1 ** 2).sum(1).view(-1, 1)
@@ -26,6 +34,13 @@ def dist_matrix(d1, d2, is_normalized=False):
 
 
 def orientation_diff(o1, o2):
+    """
+    Returns the difference between two diffs.
+
+    Args:
+        o1: (array): write your description
+        o2: (array): write your description
+    """
     diff = o2 - o1
     diff[diff < - 180] += 360
     diff[diff >= 180] -= 360
@@ -51,6 +66,13 @@ def piecewise_arange(piecewise_idxer):
 
 
 def batch_2x2_inv(m, check_dets=False):
+    """
+    2x2 norm.
+
+    Args:
+        m: (todo): write your description
+        check_dets: (bool): write your description
+    """
     a = m[..., 0, 0]
     b = m[..., 0, 1]
     c = m[..., 1, 0]
@@ -67,14 +89,32 @@ def batch_2x2_inv(m, check_dets=False):
 
 
 def batch_2x2_Q(m):
+    """
+    Batch 2x2x2.
+
+    Args:
+        m: (todo): write your description
+    """
     return batch_2x2_inv(batch_2x2_invQ(m), check_dets=True)
 
 
 def batch_2x2_invQ(m):
+    """
+    Evaluates the m2 function
+
+    Args:
+        m: (todo): write your description
+    """
     return m @ m.transpose(-1, -2)
 
 
 def batch_2x2_det(m):
+    """
+    Evaluate x2x2 norm.
+
+    Args:
+        m: (todo): write your description
+    """
     a = m[..., 0, 0]
     b = m[..., 0, 1]
     c = m[..., 1, 0]
@@ -83,6 +123,12 @@ def batch_2x2_det(m):
 
 
 def batch_2x2_ellipse(m):
+    """
+    Compute ellipse ellipsoid ellipsoid.
+
+    Args:
+        m: (todo): write your description
+    """
     am = m[..., 0, 0]
     bm = m[..., 0, 1]
     cm = m[..., 1, 0]
@@ -108,6 +154,14 @@ def batch_2x2_ellipse(m):
 
 
 def draw_first_k_couples(k, rdims, dv):
+    """
+    Draw k k k k k k k k tensor.
+
+    Args:
+        k: (todo): write your description
+        rdims: (int): write your description
+        dv: (todo): write your description
+    """
     # exhaustive search over the first n samples:
     # n(n+1)/2 = n2/2 + n/2 couples
     # max n for which we can exhaustively sample with k couples:
@@ -122,6 +176,14 @@ def draw_first_k_couples(k, rdims, dv):
 
 
 def random_samples_indices(iters, rdims, dv):
+    """
+    Generate random indices of samples.
+
+    Args:
+        iters: (int): write your description
+        rdims: (int): write your description
+        dv: (int): write your description
+    """
     rands = torch.rand(size=(iters, 2, rdims.shape[0]), device=dv)
     scaled_rands = rands * (rdims - 1e-8).float()
     rand_samples_rel = scaled_rands.long()
