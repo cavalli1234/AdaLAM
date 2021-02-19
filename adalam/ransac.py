@@ -47,14 +47,14 @@ def confidence_based_inlier_selection(residuals, ransidx, rdims, idxoffsets, dv,
     inlier_weights[too_perfect_fits] = 0.
 
     balanced_rdims, weights_cumsums = group_sum_and_cumsum(inlier_weights, end_rans_indexing, ransidx)
-    progressive_inl_rates = weights_cumsums / (balanced_rdims.repeat_interleave(rdims, dim=1)).float()
+    progressive_inl_rates = weights_cumsums.float() / (balanced_rdims.repeat_interleave(rdims, dim=1)).float()
 
     good_inl_mask = (sorted_res_sqr * min_confidence <= progressive_inl_rates) | too_perfect_fits
 
     inlier_weights[~good_inl_mask] = 0.
     inlier_counts_matrix, _ = group_sum_and_cumsum(inlier_weights, end_rans_indexing)
 
-    inl_counts, inl_iters = torch.max(inlier_counts_matrix, dim=0)
+    inl_counts, inl_iters = torch.max(inlier_counts_matrix.long(), dim=0)
 
     relative_inl_idxes = arange_sequence(inl_counts)
     inl_ransidx = torch.arange(numransacs, device=dv).repeat_interleave(inl_counts)
