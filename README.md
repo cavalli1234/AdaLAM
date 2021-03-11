@@ -19,10 +19,10 @@ The main aim of this repository is to provide a strong classical baseline that c
 
 If you find our code or paper useful, please consider citing
 ```
-@article{cavalli2020adalam,
-  title={AdaLAM: Revisiting Handcrafted Outlier Detection},
+@inproceedings{cavalli2020handcrafted,
+  title={Handcrafted Outlier Detection Revisited},
   author={Cavalli, Luca and Larsson, Viktor and Oswald, Martin Ralf and Sattler, Torsten and Pollefeys, Marc},
-  journal={arXiv preprint arXiv:2006.04250},
+  booktitle={European Conference on Computer Vision},
   year={2020}}
 ```
 
