@@ -81,22 +81,29 @@ def extract_neighborhood_sets(
     """
     dst1 = dist1[im1seeds, :]
     dst2 = dist_matrix(k2[fnn12[im1seeds]], k2[fnn12])
+
+    # initial candidates are matches which are close to the same seed in both images
     local_neighs_mask = (dst1 < (SEARCH_EXP * R1) ** 2) \
                         & (dst2 < (SEARCH_EXP * R2) ** 2)
 
+    # If requested, also their orientation delta should be compatible with that of the corresponding seed
     if ORIENTATION_THR is not None and ORIENTATION_THR < 180:
         relo = orientation_diff(o1, o2[fnn12])
         orientation_diffs = torch.abs(
             orientation_diff(relo.unsqueeze(0), relo[im1seeds].unsqueeze(1)))
         local_neighs_mask = local_neighs_mask & (orientation_diffs <
                                                  ORIENTATION_THR)
+
+    # If requested, also their scale delta should be compatible with that of the corresponding seed
     if SCALE_RATE_THR is not None and SCALE_RATE_THR < 10:
         rels = s2[fnn12] / s1
         scale_rates = rels[im1seeds].unsqueeze(1) / rels.unsqueeze(0)
         local_neighs_mask = local_neighs_mask & (scale_rates < SCALE_RATE_THR) \
                             & (scale_rates > 1 / SCALE_RATE_THR)  # (ns, n1)
 
+    # count how many keypoints ended up in each neighborhood
     numn1 = torch.sum(local_neighs_mask, dim=1)
+    # and only keep the ones that have enough points
     valid_seeds = numn1 >= MIN_INLIERS
 
     local_neighs_mask = local_neighs_mask[valid_seeds, :]
@@ -127,6 +134,7 @@ def extract_local_patterns(
         im2seeds: Keypoint index of chosen seeds in image I_2
         scores: Scores to rank correspondences by confidence.
                 Lower scores are assumed to be more confident, consistently with Lowe's ratio scores.
+                Note: scores should be between 0 and 1 for this function to work as expected.
 
         Returns:
             All information required for running the parallel RANSACs.
@@ -140,15 +148,23 @@ def extract_local_patterns(
             tokp1: Index of the original keypoint in image I_1 for each RANSAC sample.
             tokp2: Index of the original keypoint in image I_2 for each RANSAC sample.
     """
+    # first get an indexing representation of the assignments:
+    # - ransidx holds the index of the seed for each assignment
+    # - tokp1 holds the index of the keypoint in image I_1 for each assignment 
     ransidx, tokp1 = torch.where(fnn_to_seed_local_consistency_map_corr)
+    # - and of course tokp2 holds the index of the corresponding keypoint in image I_2
     tokp2 = fnn12[tokp1]
 
+    # Now take the locations in the image of each considered keypoint ... 
     im1abspattern = k1[tokp1]
     im2abspattern = k2[tokp2]
 
+    # ... and subtract the location of its corresponding seed to get relative coordinates
     im1loc = im1abspattern - k1[im1seeds[ransidx]]
     im2loc = im2abspattern - k2[im2seeds[ransidx]]
 
+    # Finally we need to sort keypoints by scores in a way that assignments to the same seed are close together
+    # To achieve this we assume scores lie in (0, 1) and add the integer index of the corresponding seed
     expanded_local_scores = scores[tokp1] + ransidx.type(scores.dtype)
 
     sorting_perm = torch.argsort(expanded_local_scores)
@@ -223,15 +239,17 @@ def adalam_core(k1: torch.Tensor,
         k2maxs, _ = torch.max(k2, dim=0)
         im2shape = (k2maxs - k2mins).cpu().numpy()
 
+    # Compute seed selection radii to be invariant to image rescaling
     R1 = np.sqrt(np.prod(im1shape[:2]) / AREA_RATIO / np.pi)
     R2 = np.sqrt(np.prod(im2shape[:2]) / AREA_RATIO / np.pi)
 
-    n1 = k1.shape[0]
-    n2 = k2.shape[0]
-
+    # Precompute the inner distances of keypoints in image I_1
     dist1 = dist_matrix(k1, k1)
+
+    # Select seeds
     im1seeds, im2seeds = select_seeds(dist1, R1, scores1, fnn12, mnn)
 
+    # Find the neighboring and coherent keyopints consistent with each seed
     local_neighs_mask, rdims, im1seeds, im2seeds = extract_neighborhood_sets(
         o1, o2, s1, s2, dist1, im1seeds, im2seeds, k1, k2, R1, R2, fnn12,
         ORIENTATION_THR, SCALE_RATE_THR, SEARCH_EXP, MIN_INLIERS)
@@ -242,11 +260,13 @@ def adalam_core(k1: torch.Tensor,
         absolute_im2idx = fnn12[absolute_im1idx]
         return torch.stack([absolute_im1idx, absolute_im2idx], dim=1)
 
+    # Format neighborhoods for parallel RANSACs
     im1loc, im2loc, ransidx, tokp1, tokp2 = extract_local_patterns(
         fnn12, local_neighs_mask, k1, k2, im1seeds, im2seeds, scores1)
     im1loc = im1loc / (R1 * SEARCH_EXP)
     im2loc = im2loc / (R2 * SEARCH_EXP)
 
+    # Run the parallel confidence-based RANSACs to perform local affine verification
     inlier_idx, _, \
     inl_count_sign, inlier_counts = ransac(xsamples=im1loc,
                                            ysamples=im2loc,
