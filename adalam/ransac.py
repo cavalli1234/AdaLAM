@@ -62,7 +62,7 @@ def confidence_based_inlier_selection(residuals, ransidx, rdims, idxoffsets, dv,
                                   idxoffsets[inl_ransidx] + relative_inl_idxes]
     highest_accepted_sqr_residuals = sorted_res_sqr[inl_iters, idxoffsets + inl_counts - 1]
     expected_extra_inl = balanced_rdims[inl_iters, torch.arange(numransacs, device=dv)].float() * highest_accepted_sqr_residuals
-    return inl_ransidx, inl_sampleidx, inl_counts, inl_iters, 1.-expected_extra_inl/inl_counts.float()
+    return inl_ransidx, inl_sampleidx, inl_counts, inl_iters, inl_counts.float()/expected_extra_inl
 
 
 def sample_padded_inliers(xsamples, ysamples, inlier_counts, inl_ransidx, inl_sampleidx, numransacs, dv):
@@ -104,7 +104,7 @@ def ransac(xsamples, ysamples, rdims, config, iters=128, refit=True):
 
     inl_ransidx, inl_sampleidx, \
     inl_counts, inl_iters, \
-    comp_inl_counts = confidence_based_inlier_selection(residuals, ransidx,
+    inl_confidence = confidence_based_inlier_selection(residuals, ransidx,
                             rdims, idxoffsets, dv=dv, min_confidence=MIN_CONFIDENCE)
 
     if len(inl_sampleidx) == 0:
@@ -114,7 +114,7 @@ def ransac(xsamples, ysamples, rdims, config, iters=128, refit=True):
     if not refit:
         return inl_sampleidx, \
                affinities_fit[inl_iters, torch.arange(inl_iters.shape[0], device=dv)], \
-               comp_inl_counts, inl_counts
+               inl_confidence, inl_counts
 
     # Organize inliers found into a matrix for efficient GPU re-fitting.
     # Cope with the irregular number of inliers per sample by padding with zeros
@@ -135,6 +135,6 @@ def ransac(xsamples, ysamples, rdims, config, iters=128, refit=True):
     residuals = torch.norm(y_pred - ysamples, dim=-1)
 
     inl_ransidx, inl_sampleidx, \
-    inl_counts, inl_iters, comp_inl_counts = confidence_based_inlier_selection(residuals.unsqueeze(0), ransidx,
+    inl_counts, inl_iters, inl_confidence = confidence_based_inlier_selection(residuals.unsqueeze(0), ransidx,
                             rdims, idxoffsets, dv=dv, min_confidence=MIN_CONFIDENCE)
-    return inl_sampleidx, refit_affinity, comp_inl_counts, inl_counts
+    return inl_sampleidx, refit_affinity, inl_confidence, inl_counts

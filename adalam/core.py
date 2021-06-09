@@ -268,15 +268,14 @@ def adalam_core(k1: torch.Tensor,
 
     # Run the parallel confidence-based RANSACs to perform local affine verification
     inlier_idx, _, \
-    inl_count_sign, inlier_counts = ransac(xsamples=im1loc,
+    inl_confidence, inlier_counts = ransac(xsamples=im1loc,
                                            ysamples=im2loc,
                                            rdims=rdims, iters=RANSAC_ITERS,
                                            refit=REFIT, config=config)
 
-    ics = inl_count_sign[ransidx[inlier_idx]]
-    ica = inlier_counts[ransidx[inlier_idx]].float()
-    passed_inliers_mask = (ics >=
-                           (1 - 1 / MIN_CONF)) & (ica * ics >= MIN_INLIERS)
+    conf = inl_confidence[ransidx[inlier_idx]]
+    cnt = inlier_counts[ransidx[inlier_idx]].float()
+    passed_inliers_mask = (conf >= MIN_CONF) & (cnt * (1 - 1/conf) >= MIN_INLIERS)
     accepted_inliers = inlier_idx[passed_inliers_mask]
 
     absolute_im1idx = tokp1[accepted_inliers]
