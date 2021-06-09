@@ -59,6 +59,7 @@ class AdalamFilter:
                                   so it requires this to be a list of indices a_i such that the source keypoint i is associated to the destination keypoint a_i.
                                   For now to use AdaLAM on different inputs a workaround on the input format is required.
                                   Expected a long tensor with shape (num_keypoints_in_source_image,).
+                scores: Confidence scores on the putative_matches. Usually holds Lowe's ratio scores.
                 mnn: A mask indicating which putative matches are also mutual nearest neighbors. See documentation on 'force_seed_mnn' in the DEFAULT_CONFIG.
                      If None, it disables the mutual nearest neighbor filtering on seed point selection.
                      Expected a bool tensor with shape (num_keypoints_in_source_image,)
