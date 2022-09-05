@@ -26,6 +26,21 @@ If you find our code or paper useful, please consider citing
   year={2020}}
 ```
 
+## Using from kornia
+
+AdaLAM is integrated into [kornia](https://github.com/kornia/kornia) library since version 0.6.7.
+
+```
+pip install kornia==0.6.7
+```
+
+Then you can import it as 
+```python3
+from kornia.feature import match_adalam
+```
+
+See tutorial on using AdaLAM from kornia [here](https://kornia-tutorials.readthedocs.io/en/latest/image_matching_adalam.html).
+
 ## Installation
 
 For running AdaLAM you need a Python3.7 environment with pytorch and tqdm available.
